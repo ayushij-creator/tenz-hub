@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Join the Squad | TenZ Fan Hub</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<main>
+  <div class="wrap page-head">
+    <div class="eyebrow">Community</div>
+    <h1>Join the Squad</h1>
+  </div>
+  <section class="section" style="padding-top:2rem">
+    <div class="wrap" style="max-width:720px">
+      <form class="squad" id="form" novalidate>
+        <div class="row">
+          <div><label for="gamertag">Gamertag *</label><input id="gamertag" name="gamertag" maxlength="24" required></div>
+          <div><label for="email">Email *</label><input id="email" name="email" type="email" maxlength="120" required></div>
+        </div>
+        <div class="row">
+          <div><label for="rank">Rank *</label>
+            <select id="rank" name="rank" required>
+              <option value="">Select</option>
+              <option>Unranked</option><option>Iron</option><option>Bronze</option><option>Silver</option>
+              <option>Gold</option><option>Platinum</option><option>Diamond</option>
+              <option>Ascendant</option><option>Immortal</option><option>Radiant</option>
+            </select></div>
+          <div><label for="agent">Favorite agent *</label><input id="agent" name="agent" maxlength="30" required></div>
+        </div>
+        <div><label for="clip">Clip link (optional)</label><input id="clip" name="clip" type="url" maxlength="200" placeholder="https://"></div>
+        <div><label for="message">Message (optional)</label><textarea id="message" name="message" rows="4" maxlength="500"></textarea></div>
+        <div class="hp" aria-hidden="true"><label>Leave empty<input name="website" tabindex="-1" autocomplete="off"></label></div>
+        <button class="btn" type="submit" id="send">Join the squad</button>
+        <p class="status" id="status" role="status"></p>
+        <p class="muted" style="font-size:.85rem">Your email is never shown publicly. Only gamertag, rank, and agent appear on the Squad Wall.</p>
+      </form>
+    </div>
+  </section>
+
+  <section class="section wall" style="padding-top:0">
+    <div class="wrap">
+      <h2>Squad Wall</h2>
+      <div class="grid" id="wall"><p class="muted">Loading…</p></div>
+    </div>
+  </section>
+</main>
+<script src="/js/shell.js"></script>
+<script>
+  const form = document.getElementById('form');
+  const statusEl = document.getElementById('status');
+  const wall = document.getElementById('wall');
+  const send = document.getElementById('send');
+
+  function say(msg, cls) { statusEl.textContent = msg; statusEl.className = 'status ' + (cls || ''); }
+
+  async function loadWall() {
+    try {
+      const r = await fetch('/api/squad');
+      if (!r.ok) throw 0;
+      const rows = await r.json();
+      wall.replaceChildren();
+      if (!rows.length) { wall.innerHTML = '<p class="muted">Be the first on the wall.</p>'; return; }
+      rows.forEach(m => {
+        const c = document.createElement('div'); c.className = 'card';
+        const h = document.createElement('h3'); h.textContent = m.gamertag;
+        const a = document.createElement('span'); a.className = 'tag'; a.textContent = m.rank;
+        const b = document.createElement('span'); b.className = 'tag'; b.textContent = m.agent;
+        c.append(h, a, b); wall.append(c);
+      });
+    } catch { wall.innerHTML = '<p class="muted">Squad Wall unavailable right now.</p>'; }
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form));
+    if (!data.gamertag.trim() || !data.email.trim() || !data.rank || !data.agent.trim()) {
+      return say('Fill in gamertag, email, rank, and agent.', 'err');
+    }
+    send.disabled = true; say('Sending…');
+    try {
+      const r = await fetch('/api/squad', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      const out = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(out.error || 'Something went wrong.');
+      say('You are in. Welcome to the squad.', 'ok'); form.reset(); loadWall();
+    } catch (err) { say(err.message, 'err'); }
+    send.disabled = false;
+  });
+  loadWall();
+</script>
+</body>
+</html>

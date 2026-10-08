@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TenZ Fan Hub</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<main>
+  <section class="hero-track" id="track">
+    <div class="hero-sticky">
+      <div class="hero-bg"></div>
+      <div class="hero-word" aria-hidden="true">TENZ&nbsp;TENZ&nbsp;TENZ</div>
+      <div class="hero-person">
+        <img src="/img/tenz-cutout.png" alt="TenZ cutout" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'ph',textContent:'ADD /img/tenz-cutout.png'}))">
+      </div>
+      <div class="hero-copy">
+        <div class="eyebrow">Fan-made tribute</div>
+        <h1>TenZ<br>Fan Hub</h1>
+        <p>A fan site celebrating one of Valorant's most recognizable players. Scroll to explore.</p>
+        <a class="btn" href="/squad.html">Join the squad</a>
+      </div>
+      <div class="hero-hint">SCROLL ↓</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2 class="reveal">Explore</h2>
+      <div class="grid">
+        <a class="card reveal" href="/journey.html"><h3>Journey</h3><p class="muted">The career timeline, milestone by milestone.</p></a>
+        <a class="card reveal" href="/highlights.html"><h3>Highlights</h3><p class="muted">Clips worth rewatching, filterable by type.</p></a>
+        <a class="card reveal" href="/squad.html"><h3>Join the Squad</h3><p class="muted">Sign up and appear on the Squad Wall.</p></a>
+        <a class="card reveal" href="/setup.html"><h3>Setup</h3><p class="muted">Settings and gear, linked to official sources.</p></a>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="/js/shell.js"></script>
+<script>
+  const track = document.getElementById('track');
+  let ticking = false;
+  function update() {
+    const max = track.offsetHeight - innerHeight;
+    const p = Math.min(1, Math.max(0, -track.getBoundingClientRect().top / max));
+    track.style.setProperty('--p', p.toFixed(4));
+    ticking = false;
+  }
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  update();
+</script>
+</body>
+</html>

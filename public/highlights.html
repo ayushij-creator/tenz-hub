@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Highlights | TenZ Fan Hub</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<main>
+  <div class="wrap page-head">
+    <div class="eyebrow">Clips</div>
+    <h1>Highlights</h1>
+  </div>
+  <section class="section" style="padding-top:2rem">
+    <div class="wrap">
+      <div class="chips" id="chips"></div>
+      <div class="grid" id="vids"></div>
+    </div>
+  </section>
+</main>
+<script src="/js/shell.js"></script>
+<script>
+  // Fill in: id = the part after v= in the YouTube link
+  const CLIPS = [
+    { id: 'VIDEO_ID_1', title: 'Clip title 1', tag: 'Plays' },
+    { id: 'VIDEO_ID_2', title: 'Clip title 2', tag: 'Tournaments' },
+    { id: 'VIDEO_ID_3', title: 'Clip title 3', tag: 'Streams' },
+    { id: 'VIDEO_ID_4', title: 'Clip title 4', tag: 'Plays' },
+    { id: 'VIDEO_ID_5', title: 'Clip title 5', tag: 'Tournaments' },
+    { id: 'VIDEO_ID_6', title: 'Clip title 6', tag: 'Streams' }
+  ];
+  const tags = ['All', ...new Set(CLIPS.map(c => c.tag))];
+  const chips = document.getElementById('chips');
+  const vids = document.getElementById('vids');
+
+  function render(tag) {
+    vids.replaceChildren();
+    CLIPS.filter(c => tag === 'All' || c.tag === tag).forEach(c => {
+      const card = document.createElement('div'); card.className = 'card';
+      const v = document.createElement('div'); v.className = 'video';
+      v.innerHTML = '<span class="play">▶ PLAY</span>';
+      v.addEventListener('click', () => {
+        v.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(c.id)}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen title=""></iframe>`;
+      }, { once: true });
+      const h = document.createElement('h3'); h.textContent = c.title; h.style.marginTop = '.8rem';
+      const t = document.createElement('span'); t.className = 'tag'; t.textContent = c.tag;
+      card.append(v, h, t); vids.append(card);
+    });
+  }
+  tags.forEach((t, i) => {
+    const b = document.createElement('button'); b.className = 'chip' + (i ? '' : ' on'); b.textContent = t;
+    b.addEventListener('click', () => {
+      chips.querySelectorAll('.chip').forEach(x => x.classList.remove('on'));
+      b.classList.add('on'); render(t);
+    });
+    chips.append(b);
+  });
+  render('All');
+</script>
+</body>
+</html>
