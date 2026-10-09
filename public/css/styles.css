@@ -190,7 +190,15 @@ h1 { font-family: 'Rajdhani', sans-serif; text-transform: uppercase; letter-spac
 @media (prefers-reduced-motion: reduce) { .hero-v .ring { animation: none; } }
 @media (max-width: 700px) { .hero-v .crosshair { opacity: .25; right: -10%; width: 70vw; } }
 
-.hero-person .hero-cross { width: 100%; height: 100%; max-height: 100%; opacity: .85; }
-.hero-person .ring { transform-origin: 50% 50%; animation: crossspin 40s linear infinite; }
-@keyframes crossspin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .hero-person .ring { animation: none; } }
+/* Full-screen faded background on sub pages (not the home hero) */
+body:not(:has(.hero-track))::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255,70,85,.10), transparent 60%),
+    linear-gradient(rgba(11,13,18,.6), rgba(11,13,18,.88)),
+    url('/img/bg-side.jpg') center 55% / cover no-repeat;
+  opacity: .22;
+  filter: saturate(.25);
+}
+main { position: relative; z-index: 1; }

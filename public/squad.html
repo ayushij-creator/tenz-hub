@@ -5,6 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Join the Squad | TenZ Fan Hub</title>
   <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .wall-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .wall-count { font-family: 'Rajdhani', sans-serif; letter-spacing: .15em; text-transform: uppercase; color: #3DF2E0; }
+    .wall-count b { color: #FF4655; font-size: 1.4em; }
+
+    .wall-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+
+    .player {
+      position: relative; background: #141821; padding: 1.2rem 1.2rem 1.1rem 1.5rem;
+      clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+      transition: transform .25s ease;
+    }
+    .player::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 4px; background: #FF4655; opacity: .55; transition: opacity .25s ease; }
+    .player:hover { transform: translateY(-4px); }
+    .player:hover::before { opacity: 1; }
+
+    .player .num { position: absolute; top: .7rem; right: 1.6rem; font-family: 'Rajdhani', sans-serif; font-size: .85rem; letter-spacing: .15em; color: #8B93A1; }
+    .player .rank { display: inline-block; margin-bottom: .6rem; padding: .15rem .6rem; font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: .8rem; letter-spacing: .15em; text-transform: uppercase; color: #3DF2E0; border: 1px solid #3DF2E0; }
+    .player h3 { margin: 0 0 .5rem; font-family: 'Rajdhani', sans-serif; font-size: 1.6rem; text-transform: uppercase; letter-spacing: .04em; color: #ECE8E1; overflow-wrap: anywhere; }
+    .player .agent { color: #8B93A1; font-size: .9rem; text-transform: uppercase; letter-spacing: .12em; }
+    .player .agent::before { content: '// '; color: #FF4655; }
+
+    @media (prefers-reduced-motion: reduce) { .player, .player::before { transition: none; } .player:hover { transform: none; } }
+  </style>
 </head>
 <body>
 <main>
@@ -42,8 +66,11 @@
 
   <section class="section wall" style="padding-top:0">
     <div class="wrap">
-      <h2>Squad Wall</h2>
-      <div class="grid" id="wall"><p class="muted">Loading…</p></div>
+      <div class="wall-head">
+        <h2 style="margin:0">Squad Wall</h2>
+        <div class="wall-count" id="count" aria-live="polite"></div>
+      </div>
+      <div class="wall-grid" id="wall"><p class="muted">Loading…</p></div>
     </div>
   </section>
 </main>
@@ -52,9 +79,27 @@
   const form = document.getElementById('form');
   const statusEl = document.getElementById('status');
   const wall = document.getElementById('wall');
+  const countEl = document.getElementById('count');
   const send = document.getElementById('send');
 
   function say(msg, cls) { statusEl.textContent = msg; statusEl.className = 'status ' + (cls || ''); }
+
+  function setCount(n) {
+    countEl.replaceChildren();
+    if (!n) return;
+    const b = document.createElement('b'); b.textContent = n;
+    countEl.append(b, ' ' + (n === 1 ? 'player has joined' : 'players have joined'));
+  }
+
+  function playerCard(m, i) {
+    const c = document.createElement('article'); c.className = 'player';
+    const num = document.createElement('span'); num.className = 'num'; num.textContent = '#' + String(i + 1).padStart(2, '0');
+    const rank = document.createElement('span'); rank.className = 'rank'; rank.textContent = m.rank;
+    const h = document.createElement('h3'); h.textContent = m.gamertag;
+    const agent = document.createElement('div'); agent.className = 'agent'; agent.textContent = m.agent;
+    c.append(num, rank, h, agent);
+    return c;
+  }
 
   async function loadWall() {
     try {
@@ -62,15 +107,17 @@
       if (!r.ok) throw 0;
       const rows = await r.json();
       wall.replaceChildren();
-      if (!rows.length) { wall.innerHTML = '<p class="muted">Be the first on the wall.</p>'; return; }
-      rows.forEach(m => {
-        const c = document.createElement('div'); c.className = 'card';
-        const h = document.createElement('h3'); h.textContent = m.gamertag;
-        const a = document.createElement('span'); a.className = 'tag'; a.textContent = m.rank;
-        const b = document.createElement('span'); b.className = 'tag'; b.textContent = m.agent;
-        c.append(h, a, b); wall.append(c);
-      });
-    } catch { wall.innerHTML = '<p class="muted">Squad Wall unavailable right now.</p>'; }
+      setCount(rows.length);
+      if (!rows.length) {
+        const p = document.createElement('p'); p.className = 'muted'; p.textContent = 'Be the first on the wall.';
+        wall.append(p); return;
+      }
+      rows.forEach((m, i) => wall.append(playerCard(m, i)));
+    } catch {
+      setCount(0);
+      const p = document.createElement('p'); p.className = 'muted'; p.textContent = 'Squad Wall unavailable right now.';
+      wall.replaceChildren(p);
+    }
   }
 
   form.addEventListener('submit', async (e) => {
