@@ -101,3 +101,20 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--cyan);bo
   .hero-word,.hero-person,.hero-copy{transform:none!important}
   .reveal{opacity:1;transform:none}
 }
+
+/* newsletter */
+.news{border-top:1px solid var(--line);background:var(--surface);padding:2.5rem 0}
+.news-in{display:grid;gap:1rem;grid-template-columns:1fr 1fr;align-items:center}
+.news-form{display:flex;gap:.6rem}
+.news-form input{flex:1}
+.news .status{grid-column:1 / -1}
+@media(max-width:720px){.news-in{grid-template-columns:1fr}.news-form{flex-direction:column}}
+
+/* events */
+.countdown{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:2rem}
+.countdown .num{font-family:var(--head);font-weight:700;font-size:clamp(3rem,10vw,6rem);color:var(--red);line-height:1}
+.badge{display:inline-block;font-family:var(--head);letter-spacing:.1em;text-transform:uppercase;font-size:.85rem;padding:0 .6rem;margin-bottom:.6rem;border:1px solid var(--red);color:var(--red)}
+.badge.past{border-color:var(--muted);color:var(--muted)}
+.card a.more{color:var(--cyan);font-family:var(--head);letter-spacing:.08em;text-transform:uppercase}
+.check{display:flex;gap:.6rem;align-items:flex-start;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:.95rem;color:var(--text)}
+.check input{width:auto;margin-top:.3rem}

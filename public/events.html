@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Events | TenZ Fan Hub</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<main>
+  <div class="wrap page-head">
+    <div class="eyebrow">Calendar</div>
+    <h1>Events</h1>
+    <p class="muted" style="max-width:640px;margin-top:1rem">
+      TenZ retired from pro play in 2024 and now creates content for T1. This page tracks
+      T1's big events and his own appearances. Always confirm dates on the official links.
+    </p>
+  </div>
+
+  <section class="section" style="padding-top:2rem">
+    <div class="wrap">
+      <div class="countdown">
+        <div class="num" id="days">--</div>
+        <div><div class="eyebrow">Until the Champions Grand Final</div><div class="muted">Oct 18, 2026 · Shanghai</div></div>
+      </div>
+      <div class="grid" id="events"></div>
+    </div>
+  </section>
+</main>
+<script src="/js/shell.js"></script>
+<script>
+  // Edit this list. Keep dates to what the official sources say.
+  const EVENTS = [
+    {
+      name: 'Valorant Champions 2026',
+      status: 'Ongoing',
+      when: 'Sep 24 – Oct 18, 2026',
+      where: 'Shanghai, China',
+      note: "The VCT 2026 world championship. T1, the organization TenZ creates content for, is in the bracket. Check the official page for the latest results.",
+      link: 'https://www.vlr.gg/event/matches/2766/valorant-champions-2026/',
+      linkText: 'Schedule and results'
+    },
+    {
+      name: 'Twitch Rivals 2026 Playoffs',
+      status: 'Past',
+      when: 'July 2026',
+      where: 'Online',
+      note: 'TenZ played in the playoffs of this creator event.',
+      link: 'https://liquipedia.net/valorant/TenZ',
+      linkText: 'Match history'
+    }
+  ];
+
+  const box = document.getElementById('events');
+  EVENTS.forEach(ev => {
+    const c = document.createElement('div'); c.className = 'card reveal';
+    const b = document.createElement('div'); b.className = 'badge' + (ev.status === 'Past' ? ' past' : ''); b.textContent = ev.status;
+    const h = document.createElement('h3'); h.textContent = ev.name;
+    const w = document.createElement('p'); w.className = 'muted'; w.textContent = ev.when + ' · ' + ev.where;
+    const n = document.createElement('p'); n.style.margin = '.6rem 0'; n.textContent = ev.note;
+    const a = document.createElement('a'); a.className = 'more'; a.href = ev.link; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = ev.linkText + ' →';
+    c.append(b, h, w, n, a); box.append(c);
+  });
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+
+  const target = Date.UTC(2026, 9, 18, 23, 59, 59);
+  const left = Math.ceil((target - Date.now()) / 86400000);
+  const d = document.getElementById('days');
+  d.textContent = left > 0 ? left : '0';
+  if (left <= 0) d.nextElementSibling.querySelector('.eyebrow').textContent = 'Champions has finished';
+</script>
+</body>
+</html>
