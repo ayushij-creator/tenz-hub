@@ -21,14 +21,13 @@
 </main>
 <script src="/js/shell.js"></script>
 <script>
-  // Fill in: id = the part after v= in the YouTube link
+  // id = the part after v= in the YouTube link
   const CLIPS = [
-    { id: 'VIDEO_ID_1', title: 'Clip title 1', tag: 'Plays' },
-    { id: 'VIDEO_ID_2', title: 'Clip title 2', tag: 'Tournaments' },
-    { id: 'VIDEO_ID_3', title: 'Clip title 3', tag: 'Streams' },
-    { id: 'VIDEO_ID_4', title: 'Clip title 4', tag: 'Plays' },
-    { id: 'VIDEO_ID_5', title: 'Clip title 5', tag: 'Tournaments' },
-    { id: 'VIDEO_ID_6', title: 'Clip title 6', tag: 'Streams' }
+    { id: 'lUccoow5DHs', title: 'Sentinels vs Fnatic: Masters Reykjavík 2021 grand final', tag: 'Tournaments' },
+    { id: 'wpDdRR-BqdU', title: 'Sentinels vs Gen.G: Masters Madrid 2024 grand final', tag: 'Tournaments' },
+    { id: 'FyJpaYb7DN8', title: 'The 3K vs Paper Rex, Madrid 2024', tag: 'Plays' },
+    { id: 'qianGpMGVk4', title: 'The 1v1 clutch vs Paper Rex, Madrid 2024', tag: 'Plays' },
+    { id: 'mlTiB02-A8U', title: 'Thank you', tag: 'Moments' }
   ];
   const tags = ['All', ...new Set(CLIPS.map(c => c.tag))];
   const chips = document.getElementById('chips');
@@ -39,15 +38,24 @@
     CLIPS.filter(c => tag === 'All' || c.tag === tag).forEach(c => {
       const card = document.createElement('div'); card.className = 'card';
       const v = document.createElement('div'); v.className = 'video';
+      v.tabIndex = 0;
+      v.setAttribute('role', 'button');
+      v.setAttribute('aria-label', 'Play: ' + c.title);
       v.innerHTML = '<span class="play">▶ PLAY</span>';
-      v.addEventListener('click', () => {
-        v.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(c.id)}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen title=""></iframe>`;
+      const start = () => {
+        v.removeAttribute('role'); v.removeAttribute('tabindex'); v.removeAttribute('aria-label');
+        v.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(c.id)}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen title="${c.title.replace(/"/g, '&quot;')}"></iframe>`;
+      };
+      v.addEventListener('click', start, { once: true });
+      v.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); start(); }
       }, { once: true });
       const h = document.createElement('h3'); h.textContent = c.title; h.style.marginTop = '.8rem';
       const t = document.createElement('span'); t.className = 'tag'; t.textContent = c.tag;
       card.append(v, h, t); vids.append(card);
     });
   }
+
   tags.forEach((t, i) => {
     const b = document.createElement('button'); b.className = 'chip' + (i ? '' : ' on'); b.textContent = t;
     b.addEventListener('click', () => {

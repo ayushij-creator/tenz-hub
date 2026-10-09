@@ -63,11 +63,14 @@
   });
   document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
 
-  const target = Date.UTC(2026, 9, 18, 23, 59, 59);
-  const left = Math.ceil((target - Date.now()) / 86400000);
+    const target = Date.UTC(2026, 9, 18, 23, 59, 59);
+  const now = Date.now();
+  const left = Math.floor((target - now) / 86400000);
   const d = document.getElementById('days');
   d.textContent = left > 0 ? left : '0';
-  if (left <= 0) d.nextElementSibling.querySelector('.eyebrow').textContent = 'Champions has finished';
+  if (target - now <= 0) {
+    d.nextElementSibling.querySelector('.eyebrow').textContent = 'Champions has finished';
+  }
 </script>
 </body>
 </html>
