@@ -118,3 +118,74 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--cyan);bo
 .card a.more{color:var(--cyan);font-family:var(--head);letter-spacing:.08em;text-transform:uppercase}
 .check{display:flex;gap:.6rem;align-items:flex-start;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:.95rem;color:var(--text)}
 .check input{width:auto;margin-top:.3rem}
+
+/* ===== Valorant-style layer ===== */
+body {
+  background-color: #0B0D12;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px),
+    radial-gradient(ellipse at 50% 0%, rgba(255,70,85,.08), transparent 60%);
+  background-size: 48px 48px, 48px 48px, 100% 100%;
+}
+
+.eyebrow { color: #FF4655; text-transform: uppercase; letter-spacing: .3em; font-family: 'Rajdhani', sans-serif; font-weight: 600; }
+.eyebrow::before { content: '// '; color: #3DF2E0; }
+
+h1 { font-family: 'Rajdhani', sans-serif; text-transform: uppercase; letter-spacing: .04em; line-height: .95; }
+.page-head h1::after { content: ''; display: block; width: 72px; height: 6px; margin-top: 14px; background: #FF4655; transform: skewX(-30deg); }
+
+/* angled panels */
+.card, .clip-card {
+  position: relative;
+  border: 0;
+  background: #141821;
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+  transition: transform .25s ease;
+}
+.card::before {
+  content: ''; position: absolute; inset: 0 auto 0 0; width: 3px; background: #FF4655;
+  opacity: .5; transition: opacity .25s ease;
+}
+.card:hover { transform: translateY(-4px); }
+.card:hover::before { opacity: 1; }
+
+/* angled buttons */
+.btn, button.btn, a.btn {
+  background: #FF4655; color: #0B0D12; border: 0; padding: .9rem 2rem;
+  font-family: 'Rajdhani', sans-serif; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
+  clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+  transition: transform .2s ease;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn.ghost { background: transparent; color: #ECE8E1; box-shadow: inset 0 0 0 2px #ECE8E1; }
+
+/* skewed filter chips */
+.chip { transform: skewX(-12deg); border-radius: 0; }
+.chip.on { background: #FF4655; color: #0B0D12; }
+
+/* keyboard focus */
+:focus-visible { outline: 2px solid #3DF2E0; outline-offset: 3px; }
+
+/* ===== Hero ===== */
+.hero-v { position: relative; min-height: 88vh; display: grid; align-items: center; overflow: hidden; padding: 7rem 1.5rem 3rem; }
+.hero-v .big {
+  position: absolute; right: -2%; top: 50%; transform: translateY(-50%);
+  font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: clamp(8rem, 28vw, 26rem); line-height: .8;
+  color: transparent; -webkit-text-stroke: 2px rgba(255,70,85,.35); letter-spacing: .02em; pointer-events: none; user-select: none;
+}
+.hero-v .crosshair { position: absolute; right: 12%; top: 50%; width: min(38vw, 420px); transform: translateY(-50%); opacity: .9; }
+.hero-v .ring { transform-origin: 50% 50%; animation: spin 40s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.hero-v .copy { position: relative; max-width: 640px; }
+.hero-v h1 { font-size: clamp(3rem, 9vw, 7rem); margin: .4rem 0 1rem; }
+.hero-v h1 span { color: #FF4655; }
+.hero-v .actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+
+.stats { display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 3rem; }
+.stat { border-left: 3px solid #FF4655; padding-left: 1rem; }
+.stat b { display: block; font-family: 'Rajdhani', sans-serif; font-size: 2rem; color: #ECE8E1; }
+.stat small { color: #8B93A1; text-transform: uppercase; letter-spacing: .15em; }
+
+@media (prefers-reduced-motion: reduce) { .hero-v .ring { animation: none; } }
+@media (max-width: 700px) { .hero-v .crosshair { opacity: .25; right: -10%; width: 70vw; } }
